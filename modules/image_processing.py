@@ -158,7 +158,7 @@ def paletteRefinement(image, dithered_image, palette, iteration):
             (np.sum(new_image[:, :, 1]-image[:, :, 1])/image.size)**2 +
             (np.sum(new_image[:, :, 2]-image[:, :, 2])/image.size)**2)
 
-        if abs(err[i]) > 0.05:
+        if abs(err[i]) > 0.02:
             break
 
         new_palette = meanCutPaletteExtract(new_image, palette.shape[1])
