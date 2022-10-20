@@ -159,7 +159,7 @@ class Widget(QWidget):
             ax_pr.axis('off')
             fig_pr.tight_layout()
             fig_pr.savefig(outputFilename_preview, dpi=300)
-            fig_pr.clf()
+            plt.close()
         else:
             # generate the preview using io.imsave
             io.imsave(outputFilename_preview, output)
@@ -182,7 +182,7 @@ class Widget(QWidget):
         fig_pt.tight_layout()
         fig_pt.savefig(outputFilename_withGrid,
                        dpi=max(height, width, 200)*5)
-        fig_pt.clf()
+        plt.close()
 
     def generatePalette(self, outputFilename_palette, palette):
         fig_pl = plt.figure()
@@ -190,7 +190,7 @@ class Widget(QWidget):
         ax_pl.imshow(palette)
         fig_pl.tight_layout()
         fig_pl.savefig(outputFilename_palette, dpi=300)
-        fig_pl.clf()
+        plt.close()
 
     def launchButton_easy(self):
         # all the magic goes here !
@@ -204,21 +204,21 @@ class Widget(QWidget):
         else:
             self.inputImagePath = Path(self.fileName[0])
 
-            # generate all the filepath
-            self.outputFilename_preview = "{}/{}_preview.jpg".format(
-                self.inputImagePath.parent, self.inputImagePath.stem)
-
-            self.outputFilename_withGrid = "{}/{}_withGrid.jpg".format(
-                self.inputImagePath.parent, self.inputImagePath.stem)
-
-            self.outputFilename_palette = "{}/{}_palette.jpg".format(
-                self.inputImagePath.parent, self.inputImagePath.stem)
-
             # generate the output
             out, self.palette = processPicture(
                 self.image,
                 [self.ui.height_selector.value(), self.ui.width_selector.value()],
                 int(self.ui.nb_colors_selector.value()))
+
+            # generate all the filepath
+            self.outputFilename_preview = "{}/{}_{}x{}_{}_preview.png".format(
+                self.inputImagePath.parent, self.inputImagePath.stem, out.shape[0], out.shape[1], self.palette.shape[1])
+
+            self.outputFilename_withGrid = "{}/{}_{}x{}_{}_withGrid.png".format(
+                self.inputImagePath.parent, self.inputImagePath.stem, out.shape[0], out.shape[1], self.palette.shape[1])
+
+            self.outputFilename_palette = "{}/{}_{}x{}_{}_palette.png".format(
+                self.inputImagePath.parent, self.inputImagePath.stem, out.shape[0], out.shape[1], self.palette.shape[1])
 
             self.generatePreview(
                 out,
@@ -256,20 +256,17 @@ class Widget(QWidget):
         else:
             self.inputImagePath = Path(self.fileName[0])
 
-            # generate all the filepath
-            self.outputFilename_preview = "{}/{}_preview.jpg".format(
-                self.inputImagePath.parent, self.inputImagePath.stem)
-
-            self.outputFilename_withGrid = "{}/{}_withGrid.jpg".format(
-                self.inputImagePath.parent, self.inputImagePath.stem)
-
-            self.outputFilename_palette = "{}/{}_palette.jpg".format(
-                self.inputImagePath.parent, self.inputImagePath.stem)
-
-            self.image = resize(self.image, (self.ui.height_selector_2.value(
-            ), self.ui.width_selector_2.value(), 3))
-
             out = dithering(self.image, self.palette_file)
+
+            # generate all the filepath
+            self.outputFilename_preview = "{}/{}_{}x{}_{}_preview.png".format(
+                self.inputImagePath.parent, self.inputImagePath.stem, out.shape[0], out.shape[1], self.palette_file.shape[1])
+
+            self.outputFilename_withGrid = "{}/{}_{}x{}_{}_withGrid.png".format(
+                self.inputImagePath.parent, self.inputImagePath.stem, out.shape[0], out.shape[1], self.palette_file.shape[1])
+
+            self.outputFilename_palette = "{}/{}_{}x{}_{}_palette.png".format(
+                self.inputImagePath.parent, self.inputImagePath.stem, out.shape[0], out.shape[1], self.palette_file.shape[1])
 
             self.generatePreview(
                 out,
