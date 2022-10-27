@@ -256,7 +256,9 @@ class Widget(QWidget):
         else:
             self.inputImagePath = Path(self.fileName[0])
 
-            out = dithering(self.image, self.palette_file)
+            out = dithering(
+                resize(self.image, (self.ui.height_selector_2.value(),self.ui.width_selector_2.value())),
+                self.palette_file)
 
             # generate all the filepath
             self.outputFilename_preview = "{}/{}_{}x{}_{}_preview.png".format(
@@ -271,7 +273,7 @@ class Widget(QWidget):
             self.generatePreview(
                 out,
                 self.outputFilename_preview,
-                'easy')
+                'pro')
 
             self.generatePattern(
                 out,
